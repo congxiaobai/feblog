@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>为什么需要单线程限制？ | 葱白的工具箱</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    
+    <meta name="description" content="Hello World">
+    
+    <link rel="preload" href="/feblog/assets/css/0.styles.90641447.css" as="style"><link rel="preload" href="/feblog/assets/js/app.af16a26a.js" as="script"><link rel="preload" href="/feblog/assets/js/2.bb248851.js" as="script"><link rel="preload" href="/feblog/assets/js/34.e0057bb1.js" as="script"><link rel="prefetch" href="/feblog/assets/js/10.1e7b7348.js"><link rel="prefetch" href="/feblog/assets/js/11.5df11de0.js"><link rel="prefetch" href="/feblog/assets/js/12.0cb13daa.js"><link rel="prefetch" href="/feblog/assets/js/13.b7203228.js"><link rel="prefetch" href="/feblog/assets/js/14.0d1b8841.js"><link rel="prefetch" href="/feblog/assets/js/15.40482005.js"><link rel="prefetch" href="/feblog/assets/js/16.975967de.js"><link rel="prefetch" href="/feblog/assets/js/17.80e3a75b.js"><link rel="prefetch" href="/feblog/assets/js/18.f8871089.js"><link rel="prefetch" href="/feblog/assets/js/19.9ccf9155.js"><link rel="prefetch" href="/feblog/assets/js/20.4f05958f.js"><link rel="prefetch" href="/feblog/assets/js/21.2532e6ba.js"><link rel="prefetch" href="/feblog/assets/js/22.10fa876d.js"><link rel="prefetch" href="/feblog/assets/js/23.9adf1998.js"><link rel="prefetch" href="/feblog/assets/js/24.8d4a2693.js"><link rel="prefetch" href="/feblog/assets/js/25.db370b93.js"><link rel="prefetch" href="/feblog/assets/js/26.f32df43c.js"><link rel="prefetch" href="/feblog/assets/js/27.15cd01b9.js"><link rel="prefetch" href="/feblog/assets/js/28.6a8a79bd.js"><link rel="prefetch" href="/feblog/assets/js/29.3b89a9ef.js"><link rel="prefetch" href="/feblog/assets/js/3.bd55a964.js"><link rel="prefetch" href="/feblog/assets/js/30.921b4f31.js"><link rel="prefetch" href="/feblog/assets/js/31.3494180c.js"><link rel="prefetch" href="/feblog/assets/js/32.50330ec3.js"><link rel="prefetch" href="/feblog/assets/js/33.f0880d8a.js"><link rel="prefetch" href="/feblog/assets/js/35.7703da2a.js"><link rel="prefetch" href="/feblog/assets/js/36.faf60c12.js"><link rel="prefetch" href="/feblog/assets/js/37.405fda0a.js"><link rel="prefetch" href="/feblog/assets/js/38.1e542b1a.js"><link rel="prefetch" href="/feblog/assets/js/39.64acf374.js"><link rel="prefetch" href="/feblog/assets/js/4.719e49fe.js"><link rel="prefetch" href="/feblog/assets/js/5.b7269ca1.js"><link rel="prefetch" href="/feblog/assets/js/6.004ca1a2.js"><link rel="prefetch" href="/feblog/assets/js/7.0bb92c79.js"><link rel="prefetch" href="/feblog/assets/js/8.e350d733.js"><link rel="prefetch" href="/feblog/assets/js/9.bd5a10e4.js">
+    <link rel="stylesheet" href="/feblog/assets/css/0.styles.90641447.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/feblog/" class="home-link router-link-active"><!----> <span class="site-name">葱白的工具箱</span></a> <div class="links"><!----> <nav class="nav-links can-hide"><div class="nav-item"><a href="/feblog/" class="nav-link">
+  Coding集
+</a></div><div class="nav-item"><a href="/feblog/book/" class="nav-link">
+  披星集
+</a></div><div class="nav-item"><a href="/feblog/atrcile/" class="nav-link">
+  荷锄集
+</a></div><div class="nav-item"><a href="/feblog/han/" class="nav-link">
+  锄月集
+</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/feblog/" class="nav-link">
+  Coding集
+</a></div><div class="nav-item"><a href="/feblog/book/" class="nav-link">
+  披星集
+</a></div><div class="nav-item"><a href="/feblog/atrcile/" class="nav-link">
+  荷锄集
+</a></div><div class="nav-item"><a href="/feblog/han/" class="nav-link">
+  锄月集
+</a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>与JS共舞</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/feblog/howjswork/1.html" class="sidebar-link">1.引擎，运行时，调用栈概述</a></li><li><a href="/feblog/howjswork/2.html" class="sidebar-link">2.V8 引擎中书写最优代码的 5 条小技巧</a></li><li><a href="/feblog/howjswork/3.html" class="sidebar-link">3.内存管理以及常见的内存泄漏处理</a></li><li><a href="/feblog/howjswork/4.html" aria-current="page" class="active sidebar-link">4.Event loop和异步编程</a></li><li><a href="/feblog/howjswork/5.html" class="sidebar-link">5.WebSockets 和HTTP2的正确姿势</a></li><li><a href="/feblog/howjswork/6.html" class="sidebar-link">6.WebAssembly以及使用它的场景</a></li><li><a href="/feblog/howjswork/7.html" class="sidebar-link">7.WebWorker和5个使用场景</a></li><li><a href="/feblog/howjswork/8.html" class="sidebar-link">8.Service Workers 的生命周期和使用场景</a></li><li><a href="/feblog/howjswork/9.html" class="sidebar-link">9.网页推送机制</a></li><li><a href="/feblog/howjswork/10.html" class="sidebar-link">10.使用MutationObserver 跟踪 DOM 变化</a></li><li><a href="/feblog/howjswork/11.html" class="sidebar-link">11.渲染引擎以及性能优化建议</a></li><li><a href="/feblog/howjswork/12.html" class="sidebar-link">12.网络层内部，以及性能，安全性的优化</a></li><li><a href="/feblog/howjswork/13.html" class="sidebar-link">13.CSS和JS动画以及优化建议</a></li><li><a href="/feblog/howjswork/14.html" class="sidebar-link">14.AST和优化建议</a></li><li><a href="/feblog/howjswork/15.html" class="sidebar-link">15.类，继承，Babel和TS的转换</a></li><li><a href="/feblog/howjswork/16.html" class="sidebar-link">16.存储引擎以及使用场景</a></li><li><a href="/feblog/howjswork/17.html" class="sidebar-link">17.影子DOM 内部构造及如何构建独立组件</a></li><li><a href="/feblog/howjswork/18.html" class="sidebar-link">18.WebRTC 及点对点网络通信机制</a></li><li><a href="/feblog/howjswork/19.html" class="sidebar-link">19.自定义元素机制</a></li><li><a href="/feblog/howjswork/20.html" class="sidebar-link">20.JS的异常处理以及在异步中处理异常的办法</a></li><li><a href="/feblog/howjswork/21.html" class="sidebar-link">21.XSS的5种方式和防范策略</a></li><li><a href="/feblog/howjswork/22.html" class="sidebar-link">22.CRFS攻击以及7种防范策略</a></li><li><a href="/feblog/howjswork/23.html" class="sidebar-link">23.迭代器以及如何获得比generator更高的控制权</a></li><li><a href="/feblog/howjswork/24.html" class="sidebar-link">24.加密和中间人（MITM）攻击</a></li><li><a href="/feblog/howjswork/25.html" class="sidebar-link">25.函数式编程和基本概念</a></li><li><a href="/feblog/howjswork/26.html" class="sidebar-link">26.多态的3种类型</a></li><li><a href="/feblog/howjswork/28.html" class="sidebar-link">28.Deno 一瞥</a></li><li><a href="/feblog/howjswork/29.html" class="sidebar-link">29.JS设计模式</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="为什么需要单线程限制"><a href="#为什么需要单线程限制" class="header-anchor">#</a> 为什么需要单线程限制？</h2> <p>在第一章，我们讨论了当调用栈中有长时间运行的函数调用时发生了什么。</p> <p>假如我们在浏览器里运行一个复杂的图像变换算法。</p> <p>当调用栈执行有函数需要执行时，浏览器是不能做其他任何事情的--它会被阻塞。此时浏览器不会渲染，也不会运行任何代码，你的UI完全的卡住了。</p> <p>一旦你的浏览器在调用栈开始处理过多的任务，它将会停止响应很长时间。在那时，许多浏览器将会提出一个异常警告，询问是否需要关闭该也页面。
+这个提醒非常丑陋：</p> <p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a3ae6a7de1034caca80807ca43beb134~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p> <h2 id="js程序的构建块"><a href="#js程序的构建块" class="header-anchor">#</a> JS程序的构建块</h2> <p>你可能在一个单独的js文件里写程序，但是你的程序一般有很多块组成，而且某个时间上只有一个块在执行，其余的将会稍后执行。最常见的块单元就是函数。
+大多数开发者刚接触JS似乎有一个这样的理解，‘稍后’不是立刻发生在now之后的。<br>
+换句话讲，当前不能完成的任务将会异步完成，这样你就不会不经意间遇到以上提及的 UI 阻塞行为。</p> <div class="language-// ajax 为一个库提供的任意 ajax 函数 extra-class"><pre class="language-text"><code>   var response = ajax('https://example.com/api'); 
+   console.log(response); 
+   // 'response' 将不会有数据返回
+</code></pre></div><p>标准的AJAX请求不会同步完成，这意味着ajax方法中的代码还没有任何返回值给response变量。
+一个简单的方式去等待异步方法的返回，就是使用回调函数</p> <div class="language- extra-class"><pre class="language-text"><code>ajax('https://example.com/api', function(response) { 
+console.log(response);
+// `response` 现在可用了 
+});
+</code></pre></div><p>你可以完全发起一个同步的ajax请求。但是永远不要这样做。如果你发起了一个同步的请求，你的JS程序的UI将会阻塞，此时用户不能点击，输入数据，导航或者滚动。这将会冻结任何用户的交互体验，非常的糟糕。</p> <div class="language- extra-class"><pre class="language-text"><code>// 假设你用的 jQuery
+jQuery.ajax({
+    url: 'https://api.example.com/endpoint',
+    success: function(response) {
+        // 这里写回调
+    },
+    async: false //同步的方式
+});
+</code></pre></div><p>这种代码长这样，但是绝对不要这样做，不要毁了你的web。</p> <p>上面是一个例子，我们可以把任何代码都放到异步执行里。</p> <p>This can be done with the setTimeout(callback, milliseconds) function. What the setTimeout function does is to set up an event (a timeout) to happen later.</p> <p>setTimeout可以达到这个效果，setTimeout做的事情就是设置一个稍后执行的event。</p> <div class="language- extra-class"><pre class="language-text"><code>function first() {
+    console.log('first');
+}
+function second() {
+    console.log('second');
+}
+function third() {
+    console.log('third');
+}
+first();
+setTimeout(second, 1000); // Invoke `second` after 1000ms
+third();
+</code></pre></div><p>我们将会得到这样的输出：</p> <div class="language- extra-class"><pre class="language-text"><code>first
+third
+second
+</code></pre></div><h2 id="什么是event-loop"><a href="#什么是event-loop" class="header-anchor">#</a> 什么是Event Loop?</h2> <p>我们以一个稍微有点奇怪的声明开始，虽然它可以使JS代码异步(比如之前讨论的 <code>setTimetout</code>)，直到ES6，实际上 JavaScript 本身并没有集成任何直接的异步编程概念。JavaScript 引擎只允许在任意时刻执行单个的程序片段。</p> <p>更多JS引擎的细节，请看前一章。</p> <p>所以，谁告诉JS引擎执行代码片段？实际上，JS引擎不是孤立执行的，它运行在一个寄宿环境中（Chrome或者Node）。实际上在今天，JS嵌入了几乎所有类型的硬件，从机器人到电灯泡。每一个设备为JS引擎提供了一个不同的寄宿环境。</p> <p>所有宿主环境都含有一个被称为<strong>事件循环</strong>的内置机制，随着时间的推移，事件循环会执行程序中多个代码片段，每次都会调用 JS 引擎。</p> <p>这意味着JS引擎只是一种按需执行的环境。这是一个封闭的环境，在其中进行事件的调度(运行JS 代码)。</p> <p>所以，举个例子。当你的程序发起了一个请求去获取服务器的数据，并设置了一个回调函数。JS引擎告诉寄宿环境‘hi,我将会暂时挂起运行了，你什么时候完成了网络请求，拿到了数据，请调用回调函数’</p> <p>浏览器之后设定了网络回应的监听，等有数据返回，它把回调函数加入到EventLoop中。
+看一下示意图</p> <p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/26e31aa3aab94c4ea4ce61f9e431b0ec~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p> <p>什么是网页 API ？本质上，你没有权限访问这些线程，你只能够调用它们。它们是浏览器自带的，且可以在浏览器中进行并发操作。如果你是个 Node.js 开发者，这些是 C++ APIs。</p> <h3 id="说了半天-到底eventloop是啥"><a href="#说了半天-到底eventloop是啥" class="header-anchor">#</a> 说了半天，到底EventLoop是啥？</h3> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/84ca8acd67a042a38c58e47cacd71416~tplv-k3u1fbpfcp-zoom-1.image" alt="事件循环图示"></p> <p>EventLoop只有一项简单的工作－--监测调用栈和回调队列。如果调用栈是空的，它会从回调队列中取得第一个事件然后入栈，然后执行。</p> <p>这样一次遍历被称为一个 tick。每个事件就是一个回调函数。</p> <div class="language- extra-class"><pre class="language-text"><code>console.log('Hi');
+setTimeout(function cb1() { 
+    console.log('cb1');
+}, 5000);
+console.log('Bye');
+</code></pre></div><p>让我们执行这段代码，然后看看会发生什么：</p> <p>1.空状态。浏览器控制台是空的，调用栈也是空的。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0d67b4e782024fab8e2f2982018d5fcf~tplv-k3u1fbpfcp-zoom-1.image" alt="空状态图例"></p> <p>2.<code>console.log('Hi')</code> 入栈。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d6790ab0e22a4c82bd54701a5ac1ca87~tplv-k3u1fbpfcp-zoom-1.image" alt="入栈图例"></p> <p>3.执行 <code>console.log('Hi')</code>。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/df7cc66c44634c2d987196f153768d3c~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>4.<code>console.log('Hi')</code> 出栈</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9a73443be482452b9f692e57b925b011~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <ol start="5"><li><code>setTimeout(function cb1() { ... })</code> 入栈。</li></ol> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a9b92a60e38d4a91a9a65903674330a7~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>6.执行 <code>setTimeout(function cb1() { ... })</code>，浏览器创建定时器作为网页 API 的一部分并将会为你处理倒计时。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cae838d8e94f4740a8a2166d51f73ad1~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>7.<code>setTimeout(function cb1() { ... })</code> 执行完毕并出栈。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c2ee97d558d645ee8d8661519490dd9b~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>8.<code>console.log('Bye')</code> 入栈。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b7d35bafa8394f8a8eeeb6a64dad1583~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>9.执行 <code>console.log('Bye')</code>。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1bfc79e0251d409bb54f6e34620d84c4~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>10.<code>console.log('Bye')</code> 出栈。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e53c34ea240546599760e3715ff666f3~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>11.至少 5 秒之后，定时器结束运行并把 <code>cb1</code> 回调添加到回调队列。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/755fb09ec4e8440589b91bee82a7e8bd~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>12.事件循环从回调队列中获得 <code>cb1</code> 函数并且将其入栈。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5448ed99993448a2950c8c389ee8b0e7~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>13.运行 <code>cb1</code> 函数并将 <code>console.log('cb1')</code> 入栈。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/de48f66fe1544eac803b81b5082ce0db~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>14.执行 <code>console.log('cb1')</code>。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/761ce4ceab3d42c084981c11df594df7~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>15.<code>console.log('cb1')</code> 出栈。</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/802b76d8bac04cfb9883620535aebc18~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p> <p>16.<code>cb1</code> 出栈</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6601f21bdc41490393af153204e422fe~tplv-k3u1fbpfcp-zoom-1.image" alt="">
+ES6 指明了EventLoop如何工作的，这意味着从技术上讲EventLoop在 JS 引擎负责的范围之内，而 JS 引擎将不再只是扮演着宿主环境的角色。<br>
+ES6 中 Promise 的出现是导致改变的主要原因之一，因为 ES6 要求更多权限，可以更直接，更细粒度地控制事件循环队列中的调度操作(之后会深入探讨)。</p> <h2 id="settimeout-是如何工作的"><a href="#settimeout-是如何工作的" class="header-anchor">#</a> setTimeout(…) 是如何工作的？</h2> <p>setTimeout没有自动把你的回调放入Loop队列。它设置了一个计时器。当计时器到了，宿主环境将回调放置进了EventLoop，这样可以在未来拾取并执行它。</p> <div class="language- extra-class"><pre class="language-text"><code>setTimeout(myCallback, 1000);
+</code></pre></div><p>这不意味着1000毫秒之后它会被执行，只是会被添加到事件队列中。当队列中此时有其他已经添加进去的事件时，你的回调就只能等待。
+现在，你知道Event Loop 如何运作的，也知道setTimeout是如何工作的：调用time传入参数0只是延缓执行直到调用栈被清空。</p> <div class="language- extra-class"><pre class="language-text"><code>console.log('Hi');
+setTimeout(function() {
+    console.log('callback');
+}, 0);
+console.log('Bye');
+</code></pre></div><p>所以尽管设置了定时器是0，但是输出的是这样的</p> <div class="language- extra-class"><pre class="language-text"><code>Hi
+Bye
+callback
+</code></pre></div><h2 id="es6的job是什么"><a href="#es6的job是什么" class="header-anchor">#</a> ES6的Job是什么 ?</h2> <p>一个新的概念，叫做Job队列（这里的Job也就是微任务），在ES6中被引入了。它始终在Event Loop队列的顶部。你极有可能在处理 Promises(之后会介绍) 的异步行为的时候无意间接触到这一概念。
+现在我们仅仅接触了概念，稍后你就会理解这些行为是如何被调度和处理的</p> <p>想象这样的场景：Job队列附加在Event Loop队列中每个 tick 末尾的队列。Event Loop的一个 tick 所产生的某些异步操作不会导致添加全新的事件到事件循环队列中，但是反而会在当前 tick 的作业队列末尾添加一个作业项。</p> <p>这意味着你可以添加一个其他的函数稍后执行，而且你可以确信它将会被在其他功能之前被执行。</p> <p>一个Job可以导致其他的更多的Job被添加在同一个队列的末尾。<br>
+理论上，它可能是一个Job Loop，它无限循环的添加事件，这会让程序无法获得必要的资源继续执行，直到下一个tick.概念上讲，这有点像在代码中执行了一个无限循环。</p> <p>Jobs are kind of like the setTimeout(callback, 0) “hack” but implemented in such a way that they introduce a much more well-defined and guaranteed ordering: later, but as soon as possible.
+Job有点像setTimeout(callback, 0)，但是实现方式不同。它们拥有明确定义和有保证的执行顺序：稍后执行，但还是要尽可能的快</p> <h2 id="回调"><a href="#回调" class="header-anchor">#</a> 回调</h2> <p>就像你已经知道的那样，回调是目前非常普遍的一种方式去表达和管理异步编程。确实，回调是最重要的异步模式。数不尽的JS程序，即使是非常复杂和巧妙的的应用，也是基于回调的。</p> <p>尽管回调也有缺点，而且许多开发者在尝试去找更好的异步模式。但是你如果不理解实现原理，那基本上是不可能有效使用任何抽象化的语法。
+在接下来的章节，，我们将会深入探究这些抽象语法并理解更复杂的异步模式的必要性。</p> <h3 id="嵌套回调"><a href="#嵌套回调" class="header-anchor">#</a> 嵌套回调</h3> <p>看代码：</p> <div class="language- extra-class"><pre class="language-text"><code>listen('click', function (e){
+    setTimeout(function(){
+        ajax('https://api.example.com/endpoint', function (text){
+            if (text == &quot;hello&quot;) {
+	        doSomething();
+	    }
+	    else if (text == &quot;world&quot;) {
+	        doSomethingElse();
+            }
+        });
+    }, 500);
+});
+</code></pre></div><p>代码里有3个函数嵌套，每一个都表示一个异步的步骤。
+这个风格的代码，经常被叫做‘回调地狱’。回调地狱不是一个嵌套/缩进的格式问题，它有更深刻的问题。</p> <p>首先，我们在等待'click'事件，然后等待一段定时器去触发，然后我们需要再次等待Ajax回应，此时会再次全部重复一遍。
+乍一眼看上去，可以上把以上具有异步特性的代码拆分为按步骤执行的代码，如下所示：</p> <div class="language- extra-class"><pre class="language-text"><code>listen('click', function (e) {
+	// ..
+});
+</code></pre></div><p>然后</p> <div class="language- extra-class"><pre class="language-text"><code>setTimeout(function(){
+    // ..
+}, 500);
+</code></pre></div><p>再然后</p> <div class="language- extra-class"><pre class="language-text"><code>ajax('https://api.example.com/endpoint', function (text){
+    // ..
+});
+</code></pre></div><p>最后</p> <div class="language- extra-class"><pre class="language-text"><code>if (text == &quot;hello&quot;) {
+    doSomething();
+}
+else if (text == &quot;world&quot;) {
+    doSomethingElse();
+}
+</code></pre></div><p>以这样顺序执行的方式来表示异步代码看起来一气呵成，应该有这样的方法吧？</p> <h2 id="promise"><a href="#promise" class="header-anchor">#</a> Promise</h2> <p>查看如下代码：</p> <div class="language- extra-class"><pre class="language-text"><code>var x = 1;
+var y = 2;
+console.log(x + y);
+</code></pre></div><p>这个很直观：计算出 x 和 y 的值,然后在控制台打印出来。<br>
+但如果 x 或者 y 的初始值是不存在的或不确定的呢？假设，在表达式中使用 x 和 y 之前，我们需要从服务器得到 x 和 y 的值。假设函数 <code>loadX</code> 和 <code>loadY</code> 分别从服务器获取 x 和 y 的值。然后，一旦得 <code>x</code> 和 <code>y</code> 的值，就可以使用 <code>sum</code> 函数计算出和值。</p> <div class="language- extra-class"><pre class="language-text"><code>function sum(getX, getY, callback) {
+    var x, y;
+    getX(function(result) {
+        x = result;
+        if (y !== undefined) {
+            callback(x + y);
+        }
+    });
+    getY(function(result) {
+        y = result;
+        if (x !== undefined) {
+            callback(x + y);
+        }
+    });
+}
+// A sync or async function that retrieves the value of `x`
+function fetchX() {
+    // ..
+}
+
+
+// A sync or async function that retrieves the value of `y`
+function fetchY() {
+    // ..
+}
+sum(fetchX, fetchY, function(result) {
+    console.log(result);
+});
+</code></pre></div><p>这里需要记住的一点是－在代码片段中，<code>x</code> 和 <code>y</code> 是未来值，我们用 <code>sum(..)</code>(从外部)来计算和值，但是并没有判断<code>x</code> 和 <code>y</code> 是否马上同时有值。
+这个粗糙的基于回调的技术还有很多需要改进的地方。这只是一小步，来帮助你理解使用未来值而不用担心值何时可用的好处。</p> <h2 id="promise-值"><a href="#promise-值" class="header-anchor">#</a> Promise 值</h2> <p>让我们简略地看一下如何用 Promises 来表示 <code>x+y</code> ：</p> <div class="language- extra-class"><pre class="language-text"><code>function sum(xPromise, yPromise) {
+	// `Promise.all([ .. ])` 包含一组 Promise,
+	// 并返回一个新的 Promise 来等待所有 Promise 执行完毕
+	return Promise.all([xPromise, yPromise])
+
+	// 当新 Promise 解析完毕，就可以同时获得 `x` 和 `y` 的值并相加。
+	.then(function(values){
+		// `values` 是之前解析 promises 返回的消息数组
+		return values[0] + values[1];
+	} );
+}
+
+// `fetchX()` and `fetchY()` 返回 promise 来取得各自的返回值，这些值返回是无时序的。
+sum(fetchX(), fetchY())
+
+// 获得一个计算两个数和值的 promise，现在，就可以链式调用 `then(...)` 来处理返回的 promise。
+.then(function(sum){
+    console.log(sum);
+});
+</code></pre></div><p>以上代码片段含有两层Promise。</p> <p><code>fetchX()</code> 和 <code>fetchY()</code> 都是直接调用，它们的返回值(promises!)都被传入 <code>sum(…)</code> 作为参数。虽然这些 promises 的 返回值也许会在现在或之后返回，但是无论如何每个 promise 都具有相同的异步行为。我们可以的推算 <code>x</code> 和 <code>y</code> 是与时间无关的值。暂时称他们为未来值。</p> <p>第二层次的 promise 是由 <code>sum(…)</code> (通过 Promise.all([ ... ]))所创建和返回的，然后通过调用 <code>then(…)</code> 来等待 promise 的返回值。当 <code>sum(…)</code> 运行结束，返回 sum 未来值然后就可以打印出来。我们在 <code>sum(…)</code> 内部隐藏了等待未来值 <code>x</code> 和 <code>y</code> 的逻辑。</p> <p><strong>注意：</strong> 在 <code>sum(…)</code> 内部，<code>Promise.all([ … ])</code>创建了一个 promise(在等待 <code>promiseX</code> 和 <code>promiseY</code> 解析之后)的链式调用 ，<code>.then(…)</code> 创建了另一个 promise，该 promise 会由代码 <code>values[0] + values[1]</code> 立刻进行解析(返回相加结果)。因此，在代码片段的末尾即 <code>sum(…)</code> 的末尾链式调用 <code>then(…)</code>－实际上是在操作第二个返回的 promise 而不是第一个由 <code>Promise.all([ ... ])</code> 创建返回的 promise。同样地，虽然我们没有在第二个<code>then(…)</code> 之后进行链式调用，但是它也创建了另一个 promise，我们可以选择观察／使用该 promise。我们将会在本章的随后内容中进行详细地探讨 promise 的链式调用相关。</p> <p>在 Promises 中，实际上 <code>then(…)</code> 函数可以传入两个函数作为参数，第一个函数是成功函数，第二个是失败函数。</p> <div class="language- extra-class"><pre class="language-text"><code>sum(fetchX(), fetchY())
+.then(
+    // 成功句柄
+    function(sum) {
+        console.log( sum );
+    },
+    // 拒绝句柄
+    function(err) {
+    	console.error( err ); // bummer!
+    }
+);
+</code></pre></div><p>当获取 <code>x</code> 或者 <code>y</code> 出现错误或者计算和值的时候出现错误，<code>sum(…)</code> 返回的 promise 将会失败，传入 <code>then(…)</code> 作为第二个参数的回调错误处理程序将会接收 promise 的返回值。</p> <p>因为 Promise 封装了时间相关的状态－等待外部的成功或者失败的返回值，Promise 本身是与时间无关的，这样就能够以可预测的方式组成(合并) Promise 而不用关心时序或者返回结果。</p> <p>除此之外，一旦 Promise 解析完成，它就会一直保持不可变的状态且可以被随意观察。</p> <p>链式调用 promise 有时候真的很管用：</p> <div class="language- extra-class"><pre class="language-text"><code>function delay(time) {
+    return new Promise(function(resolve, reject){
+        setTimeout(resolve, time);
+    });
+}
+
+delay(1000)
+.then(function(){
+    console.log(&quot;after 1000ms&quot;);
+    return delay(2000);
+})
+.then(function(){
+    console.log(&quot;after another 2000ms&quot;);
+})
+.then(function(){
+    console.log(&quot;step 4 (next Job)&quot;);
+    return delay(5000);
+})
+// ...
+</code></pre></div><p>调用 <code>delay(2000)</code> 创建一个将在 2 秒后返回成功的 promise，然后，从第一个 <code>then(…)</code> 的成功回调函数中返回该 promise，这会导致第二个 <code>then(…)</code> 返回的 promise 等待 2 秒后返回成功的 promise。</p> <p><strong>Note：</strong> 因为一个 promise 一旦结束，它的内部状态就不可以从外部改变，所以可以安全地把状态值随意分发给任意第三方。当涉及多方观察 Promise 的返回结果时候更是如此。不可变性听起来像是个晦涩的科学课题，但是，实际上这是 Promise 最根本和重要的方面，你得好好研究研究。</p> <h2 id="promise-使用时机"><a href="#promise-使用时机" class="header-anchor">#</a> Promise 使用时机</h2> <p>Promise 的一个重要细节即确定某些值是否是真正的 Promise。换句话说，这个值是否具有 Promise 的行为。</p> <p>我们可以利用 <code>new Promise(…)</code> 语法来创建 Promise，然后，你会认为使用 <code>p instanceof Promise</code> 来检测某个对象是否是 Promise 类的实例。然而，并不全然如此。</p> <p>主要的原因在于你可以从另一个浏览器窗口(比如 iframe)获得 Promise 实例，iframe 中的 Promise 不同于当前浏览器窗口或框架中的 Promise，因此，会导致检测 Promise 实例失败。</p> <p>除此之外，库或框架或许会选择使用自身自带的 Promise 而不是原生的 ES6 实现的 Promise。实际工作中，你可以使用库自带的 Promise 来兼容不支持 Promise 的老版本浏览器。</p> <h2 id="异常捕获"><a href="#异常捕获" class="header-anchor">#</a> 异常捕获</h2> <p>如果在创建 Promise 或者是在观察解析 Promise 返回结果的任意时刻，遇到了诸如 <code>TypeError</code> 或者 <code>ReferenceError</code> 的 JavaScript 错误异常，这个异常会被捕获进而强制 Promise 为失败状态。</p> <p>比如：</p> <div class="language- extra-class"><pre class="language-text"><code>var p = new Promise(function(resolve, reject){
+    foo.bar();	  // `foo` 未定义，产生错误!
+    resolve(374); // 永不执行 :(
+});
+
+p.then(
+    function fulfilled(){
+        // 永不执行 :(
+    },
+    function rejected(err){
+        // `err` 会是一个 `TypeError` 异常对象
+	     // 由于 `foo.bar()` 代码行.
+    }
+);
+</code></pre></div><p>但是，如果 Promise 成功解析了而在成功解析的监听函数(<code>then(…)</code> 注册回调)中抛出 JS 运行错误会怎么样？仍然可以捕捉到该异常，但你会发现处理这些异常的方式有些让人奇怪：</p> <div class="language- extra-class"><pre class="language-text"><code>var p = new Promise( function(resolve,reject){
+	resolve(374);
+});
+
+p.then(function fulfilled(message){
+    foo.bar();
+    console.log(message);   // 永不执行
+},
+    function rejected(err){
+        // 永不执行
+    }
+);
+</code></pre></div><p>看起来 <code>foo.bar()</code> 抛出的错误异常真的被捕获到了。但其实事实上并没有，我们没有监测到其中一些更深入的错误。<code>p.then(…)</code> 调用本身返回另一个 promise，该promise将处理rejiected句柄。</p> <p><strong>拓展一下以上的说明，这是原文没有的。</strong></p> <div class="language- extra-class"><pre class="language-text"><code>var p = new Promise( function(resolve,reject){
+	resolve(374);
+});
+
+p.then(function fulfilled(message){
+    foo.bar();
+    console.log(message);   // 永不执行
+},
+    function rejected(err){
+        // 永不执行
+    }
+).then(
+function() {},
+function(err) { console.log('err', err);}
+);
+</code></pre></div><p>如上代码所示就可以真正捕获到 promise 成功解析回调函数里面的代码错误。</p> <h2 id="处理未捕获的异常"><a href="#处理未捕获的异常" class="header-anchor">#</a> 处理未捕获的异常</h2> <p>据说一些技巧能更好的处理异常。</p> <p>普遍的做法是为 Promises 添加 <code>done(..)</code> 回调，这会标记 promise 链的状态为 &quot;done.&quot;。<code>done(…)</code> 并不会创建和返回 promise，因此，当不存在链式 promise 的时候，传入 <code>done(..)</code> 的回调就不会抛出错误。</p> <p>和未捕获的错误状况一样：任何在 <code>done(..)</code> 失败处理函数中的异常都将会被抛出为全局错误(基本上是在开发者控制台)。</p> <div class="language- extra-class"><pre class="language-text"><code>var p = Promise.resolve(374);
+
+p.then(function fulfilled(msg){
+    // 数字没有字符类的函数，所以会报错
+    console.log(msg.toLowerCase());
+})
+.done(null, function() {
+    // 若发生错误，将会抛出全局错误
+});
+</code></pre></div><h2 id="es8-中的-async-await"><a href="#es8-中的-async-await" class="header-anchor">#</a> ES8 中的 Async/await</h2> <p>JavaScript ES8 中介绍了 <code>async/await</code>，这使得处理 Promises 更加容易了。我们将会简要介绍 <code>async/await</code> 的所有可能姿势并利用其来书写异步代码。
+先瞧瞧 async/await 工作原理。</p> <p>使用 <code>async</code> 函数定义一个异步函数。该函数会返回<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncFunction" target="_blank" rel="noopener noreferrer">异步函数<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>对象。<code>AsyncFunction</code> 对象表示在异步函数中运行代码。</p> <p>当调用异步函数的时候，它会返回一个 <code>Promise</code>。异步函数返回时，返回值并不是 <code>Promise</code>，但会自动创建一个 <code>Promise</code> ，并使用返回值来解析该 <code>Promise</code>。当 <code>async</code> 函数抛出异常，<code>Promise</code> 失败回调会获取抛出的异常值。</p> <p><code>async</code> 函数可以包含一个 <code>await</code> 表达式，这样就可以暂停函数的执行来等待传入的 Promise 的返回结果，之后重启异步函数的执行并返回解析值。</p> <p>你可以把 JavaScript 中的 <code>Promise</code> 看作 Java 中的 <code>Future</code> 或 <code>C#</code> 中的 Task。</p> <blockquote><p><code>async/await</code> 本意是用来简化 promises 的使用。</p></blockquote> <p>看下如下代码：</p> <div class="language- extra-class"><pre class="language-text"><code>// 标准 JavaScript 函数
+function getNumber1() {
+    return Promise.resolve('374');
+}
+// 和 getNumber1 一样
+async function getNumber2() {
+    return 374;
+}
+</code></pre></div><p>类似地，抛出异常的函数等价于返回失败的 promises。</p> <div class="language- extra-class"><pre class="language-text"><code>function f1() {
+    return Promise.reject('Some error');
+}
+async function f2() {
+    throw 'Some error';
+}
+</code></pre></div><p><code>await</code> 关键字只能在 <code>async</code> 函数中使用并且允许你同步等待 Promise。如果在 <code>async</code> 函数外使用 promises，我们仍然必须使用 <code>then</code> 回调。</p> <div class="language- extra-class"><pre class="language-text"><code>async function loadData() {
+    // `rp` 是个发起 promise 的函数。
+    var promise1 = rp('https://api.example.com/endpoint1');
+    var promise2 = rp('https://api.example.com/endpoint2');
+   
+    // 现在，并发请求两个 promise，现在我们必须等待它们结束运行。
+    var response1 = await promise1;
+    var response2 = await promise2;
+    return response1 + ' ' + response2;
+}
+// 因为不再使用 `async function`，所以必须使用 `then`。
+loadData().then(() =&gt; console.log('Done'));
+</code></pre></div><p>你也可以使用异步函数表达式来定义异步函数。<br>
+异步函数表达式拥有和异步函数语句相近的语法。<br>
+异步函数表达式和异步函数语句的主要区别在于函数名，异步函数表达式可以忽略函数名来创建匿名函数。<br>
+异步函数表达式可以被用作 IIFE(立即执行函数表达式)，可以在定义的时候立即运行。</p> <p>像这样：</p> <div class="language- extra-class"><pre class="language-text"><code>var loadData = async function() {
+    // `rp` 是个发起 promise 的函数。
+    var promise1 = rp('https://api.example.com/endpoint1');
+    var promise2 = rp('https://api.example.com/endpoint2');
+   
+    // 现在，并发请求两个 promise，现在我们必须等待它们结束运行。
+    var response1 = await promise1;
+    var response2 = await promise2;
+    return response1 + ' ' + response2;
+}
+</code></pre></div><p>更为重要的是，所有的主流浏览器都支持 async/await</p> <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3d34e17778f547f48463dc248c19126b~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p> <p>如果该兼容性不符合你的需求，你可以使用诸如 <a href="https://babeljs.io/docs/plugins/transform-async-to-generator/" target="_blank" rel="noopener noreferrer">Babel<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 和 <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-3.html" target="_blank" rel="noopener noreferrer">TypeScript<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 的 JS 转译器来转换为自己需要的兼容程度。</p> <p>最后要说的是，不要盲目地使用最新的技术来写异步代码。理解 JavaScript 中 async 的内部原理是非常重要的，但正如编程中的其它东西一样，每种技术都有其优缺点。</p> <h2 id="书写高可用-强壮的异步代码的-5-条小技巧"><a href="#书写高可用-强壮的异步代码的-5-条小技巧" class="header-anchor">#</a> 书写高可用，强壮的异步代码的 5 条小技巧</h2> <p>1.简洁：使用 async/await 可以让你写更少的代码。每次书写 async/await 代码，你都可以跳过书写一些不必要的步骤： 比如不用写 <code>.then</code> 回调，创建匿名函数来处理返回值，命名回调返回值。</p> <div class="language- extra-class"><pre class="language-text"><code>// `rp` 是个发起 promise 的工具函数。
+rp(‘https://api.example.com/endpoint1').then(function(data) {
+ // …
+});
+</code></pre></div><p>对比：</p> <div class="language- extra-class"><pre class="language-text"><code>// `rp` 是个发起 promise 的工具函数
+var response = await rp(‘https://api.example.com/endpoint1');
+</code></pre></div><p>2.错误处理：Async/await 允许使用日常的 try/catch 代码结构体来处理同步和异步错误。看下和 Promise 是如何写的：</p> <div class="language- extra-class"><pre class="language-text"><code>function loadData() {
+    try { // 捕获同步错误.
+        getJSON().then(function(response) {
+            var parsed = JSON.parse(response);
+            console.log(parsed);
+        }).catch(function(e) { // 捕获异步错误.
+            console.log(e); 
+        });
+    } catch(e) {
+        console.log(e);
+    }
+}
+</code></pre></div><p>对比：</p> <div class="language- extra-class"><pre class="language-text"><code>async function loadData() {
+    try {
+        var data = JSON.parse(await getJSON());
+        console.log(data);
+    } catch(e) {
+        console.log(e);
+    }
+}
+</code></pre></div><p>3.条件语句：使用 <code>async/await</code> 来书写条件语句会更加直观。</p> <div class="language- extra-class"><pre class="language-text"><code>function loadData() {
+  return getJSON()
+    .then(function(response) {
+      if (response.needsAnotherRequest) {
+        return makeAnotherRequest(response)
+          .then(function(anotherResponse) {
+            console.log(anotherResponse)
+            return anotherResponse
+          })
+      } else {
+        console.log(response)
+        return response
+      }
+    })
+}
+</code></pre></div><p>对比：</p> <div class="language- extra-class"><pre class="language-text"><code>async function loadData() {
+  var response = await getJSON();
+  if (response.needsAnotherRequest) {
+    var anotherResponse = await makeAnotherRequest(response);
+    console.log(anotherResponse)
+    return anotherResponse
+  } else {
+    console.log(response);
+    return response;    
+  }
+}
+</code></pre></div><p>4.堆栈桢：和 <code>async/await</code> 不同的是，从链式 promise 返回的错误堆栈中无法得知发生错误的地方。看如下代码：</p> <div class="language- extra-class"><pre class="language-text"><code>function loadData() {
+  return callAPromise()
+    .then(callback1)
+    .then(callback2)
+    .then(callback3)
+    .then(() =&gt; {
+      throw new Error(&quot;boom&quot;);
+    })
+}
+loadData()
+  .catch(function(e) {
+    console.log(err);
+
+// Error: boom at callAPromise.then.then.then.then (index.js:8:13)
+});
+</code></pre></div><p>对比：</p> <div class="language- extra-class"><pre class="language-text"><code>async function loadData() {
+  await callAPromise1()
+  await callAPromise2()
+  await callAPromise3()
+  await callAPromise4()
+  await callAPromise5()
+  throw new Error(&quot;boom&quot;);
+}
+loadData()
+  .catch(function(e) {
+    console.log(err);
+    // output
+    // Error: boom at loadData (index.js:7:9)
+});
+</code></pre></div><p>5.调试：如果使用 promise，你就会明白调试它们是一场噩梦。例如，如果你在 .then 代码块中设置一个断点并且使用诸如 &quot;stop-over&quot; 的调试快捷键，调试器不会移动到下一个 .then 代码块，因为调试器只会步进同步代码。</p> <p>使用 <code>async/await</code> 你可以就像同步代码那样步进到下一个 await 调用。</p> <p>不仅是程序本身还有库，书写异步 JavaScript 代码都是相当重要的。</p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/feblog/howjswork/3.html" class="prev">
+        3.内存管理以及常见的内存泄漏处理
+      </a></span> <span class="next"><a href="/feblog/howjswork/5.html">
+        5.WebSockets 和HTTP2的正确姿势
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/feblog/assets/js/app.af16a26a.js" defer></script><script src="/feblog/assets/js/2.bb248851.js" defer></script><script src="/feblog/assets/js/34.e0057bb1.js" defer></script>
+  </body>
+</html>
